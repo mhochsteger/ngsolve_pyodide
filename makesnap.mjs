@@ -1,4 +1,4 @@
-import { loadPyodide } from "./pyodide.mjs";
+import { loadPyodide } from "./pyodide/pyodide.mjs";
 import { writeFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
@@ -8,7 +8,7 @@ const py = await loadPyodide({ _makeSnapshot: true });
 writeFileSync(__dirname + "/snapshot.bin", py.makeMemorySnapshot());
 await py.loadPackage(["micropip"]);
 await py.runPython("import micropip");
-await py.runPythonAsync("await micropip.install(['pydantic','numpy','certifi','ssl','urllib3','python-dateutil', 'pint'])");
+await py.runPythonAsync("await micropip.install(['pydantic','numpy','certifi','ssl','urllib3','python-dateutil', 'pint', 'orjson'])");
 await py.runPythonAsync("import shutil");
 await py.runPythonAsync(`
 import pathlib
