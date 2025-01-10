@@ -4878,7 +4878,7 @@
       "version": "6.2.2401",
       "file_name": "https://cdn.jsdelivr.net/gh/mhochsteger/ngsolve_pyodide@webgpu1/ngsolve.zip",
       "install_dir": "stdlib",
-      "sha256": "243f688e5ed5c2d7c99c41254b8e904b2f96ca6200cf8b8c2d61b266a57f0d16",
+      "sha256": "ca7d0306049a36cabb33aed96be18010e2fb606cca6f6b8f1935a97f1c8128a3",
       "package_type": "cpython_module",
       "imports": [
         "ngsolve"
