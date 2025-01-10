@@ -4862,7 +4862,7 @@
         
       "file_name": "https://cdn.jsdelivr.net/gh/mhochsteger/ngsolve_pyodide@webgpu/netgen.zip",
       "install_dir": "stdlib",
-      "sha256": "c3280276de1c3ff8dc84ea3c5d85305c2b672683af8d80f2a47386090077f82d",
+      "sha256": "3f010098e9a2347acaa90340e0b9ea2369217d91a2283239e5d8f454f1852c00",
       "package_type": "cpython_module",
       "imports": [
         "netgen"
@@ -4895,7 +4895,7 @@
       "version": "0.0.1",
       "file_name": "https://cdn.jsdelivr.net/gh/mhochsteger/ngsolve_pyodide@webgpu/pyngcore.zip",
       "install_dir": "stdlib",
-      "sha256": "945691554f4ddcca6f4cd55e76680f78c6a45f57f174635ac284b0976a90cc07",
+      "sha256": "1a69744e1d10eb14dc95610feba917e8576f910b1a033a47c019f011d15cfc42",
       "package_type": "cpython_module",
       "imports": [
         "pyngcore"
