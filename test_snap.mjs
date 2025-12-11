@@ -22,7 +22,7 @@ async function init() {
 
   py.runPython(`print("Hello from Pyodide with snapshot!")`);
   await py.unpackArchive(initData, 'zip', {
-    extractDir: '/lib/python3.13/',
+    extractDir: '/lib/python3.14/site-packages/',
   });
   const timeEnd = Date.now();
   console.log(`Loaded Pyodide with snapshot and init data in ${(timeEnd - timeStart)} ms`);

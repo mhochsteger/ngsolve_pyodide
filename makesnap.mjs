@@ -4,26 +4,41 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+// const py = await loadPyodide();
+
 const py = await loadPyodide({ _makeSnapshot: true });
 writeFileSync(__dirname + "/snapshot.bin", py.makeMemorySnapshot());
-await py.loadPackage(["micropip"]);
-await py.runPython("import micropip");
-await py.runPythonAsync("await micropip.install(['pydantic','numpy','certifi','ssl','urllib3','python-dateutil', 'pint', 'orjson'])");
-await py.runPythonAsync("import shutil");
-await py.runPythonAsync(`
-import pathlib
-import compileall
 
-#compileall.compile_dir('/lib/python3.12', optimize=2)
-dir = pathlib.Path("/lib/python3.12")
+console.log("load micropip")
+await py.loadPackage("micropip");
+const micropip = py.pyimport("micropip");
+// 'ssl' is part of the stdlib since the Python 3.14 build, no package to install
+await micropip.install(['pydantic','numpy','certifi','urllib3','python-dateutil', 'pint', 'orjson']);
+// console.log("loaded micropip")
+// await py.runPython("import micropip");
+// console.log("imported micropip")
+// await py.runPythonAsync("await micropip.install(['pydantic','numpy','certifi','ssl','urllib3','python-dateutil', 'pint', 'orjson'])");
+// await py.runPythonAsync("");
+await py.runPythonAsync(`
+import shutil
+import pathlib
+import sysconfig
+
+stdlib = sysconfig.get_path("stdlib")
+site_packages = sysconfig.get_path("purelib")
+
+#import compileall; compileall.compile_dir(stdlib, optimize=2)
+dir = pathlib.Path(stdlib)
 zip_files = dir.rglob("*.py")
 for zf in zip_files:
     s = str(zf)
     if 0 and not 'pydantic' in s and not 'six' in s and not 'typing_extensions' in s and not '__init__.py' in s:
       print('delete', zf)
       zf.unlink()
+
+shutil.make_archive('/tmp/init', 'zip', site_packages)
 `)
-await py.runPythonAsync("shutil.make_archive('/tmp/init', 'zip', '/lib/python3.12/site-packages')")
+// await py.runPythonAsync("")
 // console.log(py.FS)
 const data = py.FS.readFile("/tmp/init.zip");
 console.log('got data', data.length)
