@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Pyodide Snapshot Downloader</title>
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 24px; }
+      pre { background: #111; color: #eee; padding: 12px; border-radius: 8px; overflow: auto; }
+      button { padding: 10px 14px; border-radius: 10px; border: 1px solid #ccc; cursor: pointer; }
+      button:disabled { opacity: 0.6; cursor: not-allowed; }
+    </style>
+  </head>
+  <body>
+    <h1>Pyodide snapshot</h1>
+    <p>Click to load Pyodide and download <code>snapshot.bin</code> when finished.</p>
+    <button id="run">Generate snapshot</button>
+    <pre id="log"></pre>
+
+    <script type="module">
+      import { loadPyodide } from "https://cdn.jsdelivr.net/pyodide/v0.29.0/full/pyodide.mjs";
+
+      const logEl = document.getElementById("log");
+      const btn = document.getElementById("run");
+
+      function log(...args) {
+        const line = args.map(a => (typeof a === "string" ? a : JSON.stringify(a))).join(" ");
+        logEl.textContent += line + "\n";
+      }
+
+      function downloadBytes(bytes, filename) {
+        const blob = new Blob([bytes], { type: "application/octet-stream" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      btn.addEventListener("click", async () => {
+        btn.disabled = true;
+        logEl.textContent = "";
+
+        try {
+          log("Loading Pyodide…");
+
+          const py = await loadPyodide({
+            _makeSnapshot: true,
+            enableRunUntilComplete: true,
+          });
+
+          log("Pyodide loaded.");
+          log("Making memory snapshot…");
+
+          const snapshot = py.makeMemorySnapshot(); // typically Uint8Array
+          log("Snapshot bytes:", snapshot?.byteLength ?? snapshot?.length ?? "unknown");
+
+          downloadBytes(snapshot, "snapshot.bin");
+          log("Downloaded snapshot.bin ✅");
+        } catch (err) {
+          console.error(err);
+          log("Error:", String(err?.stack || err));
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>
